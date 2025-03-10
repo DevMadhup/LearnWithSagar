@@ -52,50 +52,59 @@ sudo status jenkins
 sudo nano /etc/nginx/sites-available/default
 Replace the file contents with:
 ```
-# HTTP server block to redirect to HTTPS and serve Certbot challenges
+# Redirect all HTTP traffic to HTTPS
 server {
     listen 80;
     server_name grafana.letsdeployit.com jenkins.letsdeployit.com;
 
-    # Serve Certbot challenge files
+    # Serve Certbot challenge files for SSL validation
     location /.well-known/acme-challenge/ {
         root /var/www/html;
     }
 
-    # Redirect all other HTTP traffic to HTTPS
     location / {
         return 301 https://$host$request_uri;
     }
 }
 
+# HTTPS server block for Grafana
 server {
-    listen 443;
+    listen 443 ssl;
     server_name grafana.letsdeployit.com;
+
+    ssl_certificate /etc/letsencrypt/live/grafana.letsdeployit.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/grafana.letsdeployit.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
         proxy_pass http://<GRAFANA_EC2_PRIVATE_IP>:3000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-
-
 
 # HTTPS server block for Jenkins
 server {
     listen 443 ssl;
     server_name jenkins.letsdeployit.com;
 
-    # Proxy to Jenkins
+    ssl_certificate /etc/letsencrypt/live/jenkins.letsdeployit.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jenkins.letsdeployit.com/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
     location / {
-        proxy_pass http://<Jenkins_EC2_PRIVATE_IP>:8080;
+        proxy_pass http://<JENKINS_EC2_PRIVATE_IP>:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
+
 ```
 
 - Test and restart Nginx:
