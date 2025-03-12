@@ -30,7 +30,6 @@ sudo systemctl status grafana-server
 sudo apt update
 sudo apt install fontconfig openjdk-17-jre
 java -version
-openjdk version "17.0.8" 2023-07-18
 ```
 
 ### Install Jenkins on the Jenkins EC2 instance:
@@ -42,7 +41,7 @@ echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
   /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo apt-get update
 sudo apt-get install jenkins
-sudo status jenkins
+sudo systemctl status jenkins
 ```
 
 ### Install and Configure Nginx as a Reverse Proxy
