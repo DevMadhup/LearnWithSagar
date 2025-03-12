@@ -88,12 +88,6 @@ sudo nginx -t
 sudo systemctl restart nginx
 ```
 
-- Create a .htpasswd file for Jenkins basic authentication:
-```
-sudo apt-get install -y apache2-utils
-sudo htpasswd -c /etc/nginx/.htpasswd admin
-```
-
 - Generate a self-signed SSL certificate using certbot:
   - Install python-certbot
   ```bash
