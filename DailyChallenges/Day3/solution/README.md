@@ -99,9 +99,5 @@ sudo htpasswd -c /etc/nginx/.htpasswd admin
   ```
   - Obtain an SSL Certificate
   ```bash
-  sudo certbot --nginx -d grafana.letsdeployit.com
+  sudo certbot --nginx -d jenkins.letsdeployit.com -d grafana.letsdeployit.com
   ```
-  
-
-
-
