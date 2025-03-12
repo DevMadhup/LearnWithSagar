@@ -46,7 +46,10 @@ sudo systemctl status jenkins
 
 ### Install and Configure Nginx as a Reverse Proxy
 - Install Nginx on one EC2 instance (e.g., Grafana EC2):
-```bash sudo apt-get install -y nginx```
+  
+```bash 
+sudo apt-get install -y nginx
+```
 - Configure Nginx: Edit the Nginx configuration file:
 
 sudo nano /etc/nginx/sites-available/default
