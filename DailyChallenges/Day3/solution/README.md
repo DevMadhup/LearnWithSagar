@@ -46,58 +46,19 @@ sudo status jenkins
 ```
 
 ### Install and Configure Nginx as a Reverse Proxy
-- Install Nginx on one EC2 instance (e.g., Grafana EC2): ```sudo apt-get install -y nginx```
+- Install Nginx on one EC2 instance (e.g., Grafana EC2):
+```bash sudo apt-get install -y nginx```
 - Configure Nginx: Edit the Nginx configuration file:
 
 sudo nano /etc/nginx/sites-available/default
 Replace the file contents with:
 ```
-# Redirect all HTTP traffic to HTTPS
 server {
     listen 80;
-    server_name grafana.letsdeployit.com jenkins.letsdeployit.com;
-
-    # Serve Certbot challenge files for SSL validation
-    location /.well-known/acme-challenge/ {
-        root /var/www/html;
-    }
-
-    location / {
-        return 301 https://$host$request_uri;
-    }
-}
-
-# HTTPS server block for Grafana
-server {
-    listen 443 ssl;
-    server_name grafana.letsdeployit.com;
-
-    ssl_certificate /etc/letsencrypt/live/grafana.letsdeployit.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/grafana.letsdeployit.com/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-    location / {
-        proxy_pass http://<GRAFANA_EC2_PRIVATE_IP>:3000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-
-# HTTPS server block for Jenkins
-server {
-    listen 443 ssl;
     server_name jenkins.letsdeployit.com;
 
-    ssl_certificate /etc/letsencrypt/live/jenkins.letsdeployit.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/jenkins.letsdeployit.com/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
     location / {
-        proxy_pass http://<JENKINS_EC2_PRIVATE_IP>:8080;
+        proxy_pass http://127.0.0.1:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -105,6 +66,18 @@ server {
     }
 }
 
+server {
+    listen 80;
+    server_name grafana.letsdeployit.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
 ```
 
 - Test and restart Nginx:
