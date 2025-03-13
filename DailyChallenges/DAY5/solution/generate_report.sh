@@ -69,7 +69,9 @@ awk '{
          }
         print timestamp, $0
         }
-}' "$LOG_FILE"
+}' "$LOG_FILE" | sort -n > failed_login.txt
+
+echo "failed login attempts saved to failed_login.txt"
 
 
 # Generate a Summary Report
