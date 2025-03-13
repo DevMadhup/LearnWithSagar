@@ -1,6 +1,6 @@
 ## Creating a custom AMI, apply security hardening, and deploy it across AWS regions.
 
-### Steps to implement:
+### Steps to implement (Custom AMI):
 
 - Login to your AWS account and create an EC2 instance with the following details:
   
@@ -40,5 +40,32 @@ sudo apt install apache2 -y
 - Once, your AMI status is available then create an EC2 instance from that AMI
 ---
 - Copy Publich IP of the EC2 instance created from custom AMI and paste it on browser, you should see apache web page.
-
+---
   
+### Steps to implement (Volumes and snapshots)
+- Login to N.Virginia EC2 instance and create one file or directory under root directory **/**
+```bash
+cd /
+sudo mkdir /testdir
+```
+---
+- Now, go to volumes and select the volume attached your instance and go to **Actions**, click on **Create Snapshot**
+---
+- Once, snapshot is created, select the created snapshot and go to **Actions**, click on **Copy Snapshot**.
+---
+- After snapshot is copied to another region, create a new volume from the snapshot.
+---
+- Create new instance with volume created from copied snapshot and ssh into the new instance
+---
+- Now mount it with the directory
+```bash
+sudo mkdir /newdisk
+sudo mount /dev//<your-partition-name/> /newdisk
+```
+---
+- Check the directory is a mountpoint
+```bash
+mountpoint /newdisk
+```
+---
+- Check if your created directory **testdir** is available.
