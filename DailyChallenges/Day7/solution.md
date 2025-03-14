@@ -57,7 +57,7 @@ flask --app flaskr run --host=0.0.0.0 --debug
 > Note: Access the application on http://\<public-ip\>:5000
 
 ---
-### Steps to deploy using Docker:
+### Steps to deploy using Jenkins & Docker:
 - Install docker:
 ```bash
 sudo apt update
@@ -65,16 +65,8 @@ sudo apt install docker.io -y
 sudo usermod -aG docker $USER && newgrp docker
 ```
 ---
-- Clone your source code:
+- Create a Dockerfile for the project:
 ```bash
-git clone https://github.com/DevMadhup/flask.git
-```
----
-- Move to source code directory
-```bash
-cd flask/examples/tutorial
-```
----
 - Create a Dockerfile and paste the below content:
 ```bash
 vim Dockerfile
@@ -104,19 +96,25 @@ EXPOSE 5000
 RUN flask --app flaskr init-db
 ENTRYPOINT ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--debug"]
 ```
----
-- Build docker image:
-```bash
-docker run -it flaskapp .
 ```
 ---
-- Run the application container
+- Install Jenkins:
 ```bash
-docker run -itd --name flaskapp -p 5000:5000 flaskapp
+sudo apt update -y
+sudo apt install fontconfig openjdk-17-jre -y
+
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+  
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+  
+sudo apt-get update -y
+sudo apt-get install jenkins -y
 ```
-> Note: Access on: http://\<public-ip\>:5000 
 ---
-- Jenkinsfile
+- Access Jenkins from the browser and create a declarative pipeline and paste the below declarative pipeline:
 ```bash
 pipeline{
     agent any
@@ -161,3 +159,5 @@ pipeline{
     }
 }
 ```
+---
+- Now, run the pipeline and after it get successfull access it on public ip and port 5000
