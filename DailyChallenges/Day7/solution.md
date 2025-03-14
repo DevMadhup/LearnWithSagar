@@ -1,4 +1,84 @@
-- Dockerfile
+## Flask app deployment 
+
+### Steps to deploy using python virtual environment:
+
+- Create an EC2 instance with the following details:
+  
+  - **AMI:** Ubuntu
+  - **Instance type:** t2.micro
+  - **Volume:** 10GB
+--- 
+- Update the system
+```bash
+sudo apt update
+```
+---
+- Install python virtual environment:
+```bash
+sudo apt install python3-venv
+````
+---
+- Create virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+---
+- Clone your source code:
+```bash
+git clone https://github.com/DevMadhup/flask.git
+```
+---
+- Move to source code directory
+```bash
+cd flask/examples/tutorial
+```
+---
+- Install the required dependencies:
+```bash
+pip install -e .
+```
+---
+- Run tests:
+```bash
+pip install '.[test]'
+pytest
+```
+---
+- Initialize database:
+```bash
+flask --app flaskr init-db
+```
+---
+- Run the application:
+```bash
+flask --app flaskr run --host=0.0.0.0 --debug
+```
+> Note: Access the application on http://\<public-ip\>:5000
+
+---
+### Steps to deploy using Docker:
+- Install docker:
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo usermod -aG docker $USER && newgrp docker
+```
+---
+- Clone your source code:
+```bash
+git clone https://github.com/DevMadhup/flask.git
+```
+---
+- Move to source code directory
+```bash
+cd flask/examples/tutorial
+```
+---
+- Create a Dockerfile and paste the below content:
+```bash
+vim Dockerfile
+```
 ```bash
 # Use Alpine-based Python image
 FROM python:3.12-alpine
@@ -24,3 +104,14 @@ EXPOSE 5000
 RUN flask --app flaskr init-db
 ENTRYPOINT ["flask", "--app", "flaskr", "run", "--host=0.0.0.0", "--debug"]
 ```
+---
+- Build docker image:
+```bash
+docker run -it flaskapp .
+```
+---
+- Run the application container
+```bash
+docker run -itd --name flaskapp -p 5000:5000 flaskapp
+```
+> Note: Access on: http://\<public-ip\>:5000 
