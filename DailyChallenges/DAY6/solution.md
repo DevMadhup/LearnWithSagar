@@ -1,4 +1,4 @@
-## Creating a custom AMI, apply security hardening, and deploy it across AWS regions.
+## Creating a custom AMI, apply security hardening, and deploy it across AWS regions. 
 
 ### Steps to implement (Custom AMI):
 
