@@ -52,7 +52,10 @@ sudo apt-get install -y nginx
 ```
 - Configure Nginx: Edit the Nginx configuration file:
 
-sudo nano /etc/nginx/sites-available/default
+```bash
+sudo vim /etc/nginx/sites-available/default
+```
+
 Replace the file contents with:
 ```
 server {
