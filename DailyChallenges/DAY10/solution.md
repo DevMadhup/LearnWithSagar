@@ -122,5 +122,12 @@ rabbitmqctl start_app
 ```bash
 rabbitmqctl cluster_status
 ```
+---
+
+- Enable the RabbitMQ Management Plugin to access UI:
+```bash
+rabbitmq-plugins enable rabbitmq_management
+systemctl restart rabbitmq-server
+```
 
 `Congratulations, you have successfully setupped RabbitMQ 3 node cluster.`
