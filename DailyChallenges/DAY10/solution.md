@@ -178,3 +178,71 @@ systemctl restart prometheus
 
 > [!Important]
 > node exporter runs on 9090 port no.
+
+---
+
+- Now, enable prometheus plugin (Node2 and Node3):
+```bash
+rabbitmq-plugins enable rabbitmq_prometheus
+systemctl restart rabbitmq-server
+```
+---
+
+- Go to Node1, go to `prometheus-2.47.0.linux-amd64` directory and edit `prometheus.yml` file to scrape the metrics which are exposed from other cluster nodes
+```bash
+cd prometheus-2.47.0.linux-amd64
+vim prometheus.yml
+```
+Add the below code to `prometheus.yml`
+```bash
+  - job_name: "Node2"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["<IP-NODE2>:15692"]
+
+  - job_name: "Node3"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["<IP-NODE3>:15692"]
+```
+---
+
+- Restart your prometheus server:
+```bash
+systemctl restart prometheus
+```
+---
+
+- Now, go to web browser, access your prometheus server and click on `Status` and then `Targets` and you will see all nodes metrics:
+
+![image](https://github.com/user-attachments/assets/98631c4e-3a3b-4009-954a-602c7af0e6bc)
+
+---
+
+- Now, setup grafana on Node1:
+```bash
+sudo apt-get update
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository "deb https://packages.grafana.com/oss/deb stable main"
+sudo apt-get update
+sudo apt-get install -y grafana
+sudo systemctl start grafana-server
+sudo systemctl enable grafana-server
+```
+
+> Grafana UI: http://\<your-server-ip\>:3000
+
+---
+
+- Go to your grafana server, add prometheus as a datasource and go to dashboard and click on import Dashboard
+  - **Dashboard ID**: 10991
+
+You will see beautiful RabbitMQ cluster Dashboard like this 
+
+![image](https://github.com/user-attachments/assets/295083ed-7a31-4c56-b890-09cbbc59ed82)
