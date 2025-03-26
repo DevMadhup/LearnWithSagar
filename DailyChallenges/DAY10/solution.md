@@ -131,3 +131,50 @@ systemctl restart rabbitmq-server
 ```
 
 `Congratulations, you have successfully setupped RabbitMQ 3 node cluster.`
+
+---
+
+- Now go to the Node-1, and setup prometheus server:
+```bash
+wget https://github.com/prometheus/prometheus/releases/download/v2.47.0/prometheus-2.47.0.linux-amd64.tar.gz
+tar zxvf prometheus-2.47.0.linux-amd64.tar.gz
+```
+---
+
+- Create a prometheus.service inside the /etc/systemd/system directory and paste the below content: `vim /etc/systemd/system/prometheus.service`
+```bash
+[Unit]
+
+Description=Prometheus Server
+
+Documentation=https://prometheus.io/docs/introduction/overview/
+
+After=network-online.target
+
+[Service]
+
+User=root
+
+Restart=on-failure
+
+ExecStart=/home/ubuntu/prometheus-2.47.0.linux-amd64/prometheus --config.file=/home/ubuntu/prometheus-2.47.0.linux-amd64/prometheus.yml
+
+[Install]
+
+WantedBy=multi-user.target
+```
+---
+
+- Reload system daemon:
+```bash
+systemctl daemon-reload
+```
+---
+
+- Restart prometheus server:
+```bash
+systemctl restart prometheus
+```
+
+> [!Important]
+> node exporter runs on 9090 port no.
